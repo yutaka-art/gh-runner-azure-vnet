@@ -1,0 +1,30 @@
+name: ipcheck
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check-network:
+    runs-on: integrated-azure-runner
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install net-tools and iproute2 (if needed)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y net-tools iproute2
+
+      - name: Show network interface and IP address
+        run: |
+          echo "=== ip addr ==="
+          ip addr
+          echo "=== ip route ==="
+          ip route
+          echo "=== curl to check public IP ==="
+          curl -s https://api.ipify.org
+
+      - name: DNS resolution test
+        run: |
+          echo "=== DNS resolution ==="
+          nslookup github.com
